@@ -1,0 +1,11 @@
+name: FWarp
+main: com.dalyeou.fwarp.FWarpMain
+version: 1.0
+
+commands:
+  portal:
+    description: Create, Delete portal.
+  warp:
+    description: Create, Delete warp. And Show Warp List.
+  Scroll:
+    description: Item.
