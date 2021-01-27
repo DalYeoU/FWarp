@@ -48,9 +48,10 @@ public class WarpScroll implements Listener, CommandExecutor {
 
 					customItem(player, a[0], a[1]);
 					loreList.clear();
+					outMessage(player, a[1], "createWarp");
 					
 				} else {
-					player.sendMessage("No Warp");
+					outMessage(player, null, "wrongWarp");
 				}
 			}
 		}
@@ -143,7 +144,7 @@ public class WarpScroll implements Listener, CommandExecutor {
 		holograms.setAI(false);
 		holograms.setRemoveWhenFarAway(false);
 		player.getWorld().playSound(location, Sound.ENTITY_CHICKEN_EGG, 0.5f, 1f);
-		outMessage(player, "createScrollPortal");
+		outMessage(player, null, "createScrollPortal");
 
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
@@ -158,25 +159,39 @@ public class WarpScroll implements Listener, CommandExecutor {
 			public void run() {
 				holograms.remove();
 				player.getWorld().playSound(location, Sound.ENTITY_ITEM_BREAK, 0.5f, 1f);
-				outMessage(player, "deadScrollPortal");
+				outMessage(player, null, "deadScrollPortal");
 			}
 		}, 200);
 
 	}
 	
-	public static void outMessage(Player player, String type) {
+	public static void outMessage(Player player,String name, String type) {
 		if(type == "createScrollPortal") {
 			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "I created a portal with scroll! The portal lasts only 10 seconds, so hurry up!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "I created a portal with scroll! The portal lasts only 10 seconds, so hurry up!");
 			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "스크롤로 포탈을 만들었어요! 포탈은 10초밖에 유지되지 않으니 서두르세요!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "스크롤로 포탈을 만들었어요! 포탈은 10초밖에 유지되지 않으니 서두르세요!");
 			}
 		}
 		if(type == "deadScrollPortal") {
 			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "The portal I made with scroll was erased due to the time limit!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "The portal I made with scroll was erased due to the time limit!");
 			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "스크롤로 만든 포털이 시간 제한 때문에 지워졌어요!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "스크롤로 만든 포털이 시간 제한 때문에 지워졌어요!");
+			}
+		}
+		if(type == "wrongWarp") {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Failed to create scroll! I think there's a problem with the warp, can you check again with the /warp list command?");
+			} else {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "스크롤을 만드는데 실패했어요! 워프가 잘못된 거 같은데 /warp list 명령어로 다시 한번 확인해 줄래요?");
+			}
+		}
+		if(type == "createWarp") {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "Ta-da! I made a scroll to the " + ChatColor.GREEN + name + ChatColor.DARK_GREEN + " warp!");
+			} else {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "짜잔! 제가 " + ChatColor.GREEN + name + ChatColor.DARK_GREEN + " 워프로 이동하는 스크롤을 만들었어요!");
 			}
 		}
 		
