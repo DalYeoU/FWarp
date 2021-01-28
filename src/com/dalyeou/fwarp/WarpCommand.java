@@ -32,6 +32,14 @@ public class WarpCommand implements CommandExecutor, TabCompleter, Listener {
 				}
 			}
 		}
+		if(c.getName().equals("portal")) {
+			if(a.length == 1) {
+				return Arrays.asList("create", "remove");
+			} else if(a.length == 2) {
+				if(a[0].equals("create")) {
+				}
+			}
+		}
 		return null;
 	}
 
@@ -41,13 +49,14 @@ public class WarpCommand implements CommandExecutor, TabCompleter, Listener {
 		if(! (cs instanceof Player)) {
 			return false;
 		}
-		if(l.equalsIgnoreCase("warp")) {
-			if(a.length == 1) {
+
+		if(l.equalsIgnoreCase("warp")) { 		// 워프 관련 명령어
+			if(a.length >= 1) {
 				if(a[0].equalsIgnoreCase("list")) {
 					player.sendMessage(FWarpMain.WarpPrefix + ChatColor.WHITE + "Warp List : " + ChatColor.GOLD + FWarpMain.Lists);
 
 				}
-				if(a[0].equalsIgnoreCase("Reload")) {
+				else if(a[0].equalsIgnoreCase("Reload")) {
 					Configs.CONFIG.reloadConfig();
 					Configs.PORTAL.reloadConfig();
 					Configs.WARP.reloadConfig();
@@ -57,35 +66,105 @@ public class WarpCommand implements CommandExecutor, TabCompleter, Listener {
 					player.sendMessage(FWarpMain.WarpPrefix + "Reload Plugin!");
 
 				}
-			}
-			if(a.length == 2) {
-				if(a[0].equalsIgnoreCase("set")) {
-					if(FWarpMain.Lists.contains(a[1])) {
-						player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+				else if(a[0].equalsIgnoreCase("set")) {
+					if(a.length != 1) {
+						if(FWarpMain.Lists.contains(a[1])) {
+							player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+							WarpMessages.outMessage(player, a[1], "alreadyWarp");
 
-						outMessage(player, a[1], "setWarp");
-
+						} else {
+							setWarp(a[1], player, "Create");
+						}
 					} else {
-						setWarp(a[1], player, "Create");
-
+						player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+						WarpMessages.outMessage(player, null, "emptyWarp");
 					}
 				}
 				else if(a[0].equalsIgnoreCase("del")) {
-					if(FWarpMain.Lists.contains(a[1])) {
-						setWarp(a[1], player, "Delete");
+					if(a.length != 1) {
+						if(FWarpMain.Lists.contains(a[1])) {
+							setWarp(a[1], player, "Delete");
 
+						} else {
+							player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+							WarpMessages.outMessage(player, a[1], "noWarp");
+
+						}
 					} else {
 						player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+						WarpMessages.outMessage(player, null, "emptyWarp");
+					}
+				} else {
+					player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Command : " + ChatColor.GOLD + "/warp <set, del, list, reload>");
 
-						outMessage(player, a[1], "delWarp");
+				}
+			} 
+		}
+
+		if(l.equalsIgnoreCase("portal")) { 		//포탈 관련 명령어
+			if(a.length >= 2) {
+				if(a[0].equalsIgnoreCase("create")) {
+
+					if(FWarpMain.warpWorld.get(a[1]) == null) {
+
+						player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+						WarpMessages.outMessage(player, a[1], "noWarp");
+						return true;
+
+					} else {
+						String text = "";
+						for(int i = 2; i < a.length; i++) {
+							text = text + " " + a[i];
+
+						}
+						text = text.replaceFirst(" ", "");
+						WarpPortal.createPortal(player, text, a[1]);
+						WarpMessages.outMessage(player, a[1], "linkPortal");
 
 					}
 				}
-			}
-		} else {
-			player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Command : /warp <set, remove, list>");
+			}else if(a.length == 1) {
+				if(a[0].equalsIgnoreCase("remove") && WarpPortal.remove == 0) {
 
+					WarpPortal.remove = 1;
+
+					WarpMessages.outMessage(player, null, "delPortal");
+
+				} else if(a[0].equalsIgnoreCase("remove") && WarpPortal.remove == 1) {
+
+					WarpPortal.remove = 0;
+
+					WarpMessages.outMessage(player, null, "canDelPortal");
+
+				}
+			}else {
+				player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Command : /portal <create, remove>");
+			}
 		}
+
+		if(l.equalsIgnoreCase("Scroll")) { 		// 스크롤 관련 명령어
+			if(a.length >= 2) {
+				if(FWarpMain.Lists.contains(a[1])) {
+					String text = "";
+					for(int i = 2; i < a.length; i++) {
+						text = text + "" + a[i];
+						String loreText = a[i];
+						loreText = loreText.replaceAll("_", " ");
+						WarpScroll.loreList.add(loreText);
+					}
+					text = text.replaceFirst(" ", "");
+
+					WarpScroll.customItem(player, a[0], a[1]);
+					WarpScroll.loreList.clear();
+					WarpMessages.outMessage(player, a[1], "createScroll");
+
+				} else {
+					WarpMessages.outMessage(player, null, "wrongScroll");
+				}
+			}
+		}
+
 		return true;
 	}
 
@@ -111,10 +190,10 @@ public class WarpCommand implements CommandExecutor, TabCompleter, Listener {
 			Configs.WARP.getConfig().set("Warps." + name + ".yaw", location.getYaw());
 			Configs.WARP.getConfig().set("Warps." + name + ".pitch", location.getPitch());
 			Configs.WARP.saveConfig();
-			
+
 			FWarpMain.Lists.add(name);
 
-			outMessage(player, name, "createWarp");
+			WarpMessages.outMessage(player, name, "createWarp");
 
 		}
 		if(type == "Delete") {
@@ -135,44 +214,12 @@ public class WarpCommand implements CommandExecutor, TabCompleter, Listener {
 			Configs.WARP.getConfig().set("Warps." + name + ".yaw", null);
 			Configs.WARP.getConfig().set("Warps." + name + ".pitch", null);
 			Configs.WARP.saveConfig();
-			
+
 			FWarpMain.Lists.remove(name);
-			
-			outMessage(player, name, "removeWarp");
+
+			WarpMessages.outMessage(player, name, "removeWarp");
 
 		}
-	}
-
-	public void outMessage(Player player, String name, String type) {
-		if(type == "setWarp") {
-			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Oh, that name already exists, so we can't create it with that name! Please choose a different name!");
-			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "그 이름이 이미 있어서 그 이름으로 만들 수 없어요! 다른 이름을 정해주세요!");
-			}
-		}
-		if(type == "delWarp") {
-			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Calm down! There's no warp named " + ChatColor.DARK_GREEN + name + "! " + ChatColor.RED + "Check again with the /warp list command!");
-			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "잠시만요! " + ChatColor.DARK_GREEN + name + " " + ChatColor.RED + "라는 이름의 워프는 없어요! /warp list 명령어로 다시 확인해봐요!");
-			}
-		}
-		if(type == "createWarp") {
-			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.GREEN + "Ta-da! I created a warp called this " + ChatColor.DARK_GREEN + name + "!");
-			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.GREEN + "짜잔! 제가 " + ChatColor.DARK_GREEN + name + " " + ChatColor.GREEN + "라는 이름의 워프를 만들었어요!");
-			}
-		}
-		if(type == "removeWarp") {
-			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.GREEN + "You don't need this warp anymore? Ok I see! Now the warp called " + ChatColor.DARK_GREEN + name + ChatColor.GREEN + " has been deleted!");
-			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.GREEN + "더이상 이 워프가 필요 없으신가요? 알겠어요! 이제 " + ChatColor.DARK_GREEN + name + ChatColor.GREEN + " 라는 이름의 워프는 삭제됐어요!");
-			}
-		}
-
 	}
 
 }

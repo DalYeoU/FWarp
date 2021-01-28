@@ -31,17 +31,35 @@ public class FWarpMain extends JavaPlugin {
 	
 	public static String pluginLanguage = "";
 	public static String baseLanguage = "en";
+	/*
+	 * Goto 명령어로 해당 워프로 바로 이동하는 명령어 만들기 
+	 */
+	
+	
+	private void checkUpdate() {
+		   final Updater updater = new Updater(this);
+		}
 
 	public void onEnable() {
+		
+		
+		
+
+			   //Check For Updates
+			      checkUpdate();
+
+		
+		
+		
 
 		// 커맨드 관련 로드
-		getCommand("portal").setExecutor( new WarpPortal());
-		getCommand("portal").setTabCompleter( new WarpPortal());
+		getCommand("portal").setExecutor( new WarpCommand());
+		getCommand("portal").setTabCompleter( new WarpCommand());
 
 		getCommand("warp").setExecutor( new WarpCommand());
 		getCommand("warp").setTabCompleter( new WarpCommand());
 		
-		getCommand("Scroll").setExecutor( new WarpScroll());
+		getCommand("Scroll").setExecutor( new WarpCommand());
 
 		// 클래스 로드
 		Bukkit.getPluginManager().registerEvents(new WarpPortal(), this);

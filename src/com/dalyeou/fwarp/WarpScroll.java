@@ -8,9 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -23,42 +20,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-public class WarpScroll implements Listener, CommandExecutor {
+public class WarpScroll implements Listener {
 
 	public static Plugin plugin = FWarpMain.getPlugin(FWarpMain.class);
 
 	static ArrayList<String> loreList = new ArrayList<String>();
 
-	public boolean onCommand(CommandSender cs, Command c, String l, String[] a) {
-		Player player = (Player) cs;
-		if(! (cs instanceof Player)) {
-			return false;
-		}
-		if(l.equalsIgnoreCase("Scroll")) {
-			if(a.length >= 2) {
-				if(FWarpMain.Lists.contains(a[1])) {
-					String text = "";
-					for(int i = 2; i < a.length; i++) {
-						text = text + "" + a[i];
-						String loreText = a[i];
-						loreText = loreText.replaceAll("_", " ");
-						loreList.add(loreText);
-					}
-					text = text.replaceFirst(" ", "");
-
-					customItem(player, a[0], a[1]);
-					loreList.clear();
-					outMessage(player, a[1], "createWarp");
-					
-				} else {
-					outMessage(player, null, "wrongWarp");
-				}
-			}
-		}
-		return true;
-	}
-
-	public static ItemStack customItem(Player player, String displayName, String warpName){
+	public static ItemStack customItem(Player player, String displayName, String warpName) { 		// 명령어로 스크롤 뽑아내기
 		ItemStack item = new ItemStack(Material.PAPER);
 		ArrayList<String> lore = new ArrayList<String>();
 		ItemMeta meta = item.getItemMeta();
@@ -81,7 +49,7 @@ public class WarpScroll implements Listener, CommandExecutor {
 		return item;
 	}
 
-	public static boolean isCustomItem(ItemStack item){
+	public static boolean isCustomItem(ItemStack item) { 		// 스크롤인지 확인
 		if(item.hasItemMeta()){
 			if((item.getItemMeta().hasDisplayName()) || item.getItemMeta().hasLore()){
 				if(item.getItemMeta().getLore().contains(ChatColor.GRAY + "Scroll")) {
@@ -99,7 +67,7 @@ public class WarpScroll implements Listener, CommandExecutor {
 
 	@SuppressWarnings("deprecation")
 	@EventHandler
-	public void onPlayerInteract(PlayerInteractEvent event) {
+	public void onPlayerInteract(PlayerInteractEvent event) { 		// 바닥 좌클릭으로 스크롤 사용
 		Player player = event.getPlayer();
 		Action action = event.getAction();
 		Block block = event.getClickedBlock();
@@ -119,7 +87,7 @@ public class WarpScroll implements Listener, CommandExecutor {
 		}
 	}
 
-	public static void scrollPortalParticle(Player player, String warpName, Location location1) {
+	public static void scrollPortalParticle(Player player, String warpName, Location location1) { 		// 스크롤 포탈에 파티클 소환
 		int b = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			@Override
 			public void run() {
@@ -135,7 +103,7 @@ public class WarpScroll implements Listener, CommandExecutor {
 		}, 200);
 	}
 
-	public static void createScrollPortal(Player player, String name, Location location) {
+	public static void createScrollPortal(Player player, String name, Location location) { 		// 스크롤 포탈 소환
 
 		ArmorStand holograms = location.getWorld().spawn(location, ArmorStand.class);
 		holograms.setGravity(false);
@@ -144,7 +112,7 @@ public class WarpScroll implements Listener, CommandExecutor {
 		holograms.setAI(false);
 		holograms.setRemoveWhenFarAway(false);
 		player.getWorld().playSound(location, Sound.ENTITY_CHICKEN_EGG, 0.5f, 1f);
-		outMessage(player, null, "createScrollPortal");
+		WarpMessages.outMessage(player, null, "createScrollPortal");
 
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
@@ -159,42 +127,10 @@ public class WarpScroll implements Listener, CommandExecutor {
 			public void run() {
 				holograms.remove();
 				player.getWorld().playSound(location, Sound.ENTITY_ITEM_BREAK, 0.5f, 1f);
-				outMessage(player, null, "deadScrollPortal");
+				WarpMessages.outMessage(player, null, "deadScrollPortal");
 			}
 		}, 200);
 
-	}
-	
-	public static void outMessage(Player player,String name, String type) {
-		if(type == "createScrollPortal") {
-			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "I created a portal with scroll! The portal lasts only 10 seconds, so hurry up!");
-			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "스크롤로 포탈을 만들었어요! 포탈은 10초밖에 유지되지 않으니 서두르세요!");
-			}
-		}
-		if(type == "deadScrollPortal") {
-			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "The portal I made with scroll was erased due to the time limit!");
-			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "스크롤로 만든 포털이 시간 제한 때문에 지워졌어요!");
-			}
-		}
-		if(type == "wrongWarp") {
-			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Failed to create scroll! I think there's a problem with the warp, can you check again with the /warp list command?");
-			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "스크롤을 만드는데 실패했어요! 워프가 잘못된 거 같은데 /warp list 명령어로 다시 한번 확인해 줄래요?");
-			}
-		}
-		if(type == "createWarp") {
-			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "Ta-da! I made a scroll to the " + ChatColor.GREEN + name + ChatColor.DARK_GREEN + " warp!");
-			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "짜잔! 제가 " + ChatColor.GREEN + name + ChatColor.DARK_GREEN + " 워프로 이동하는 스크롤을 만들었어요!");
-			}
-		}
-		
 	}
 
 }
