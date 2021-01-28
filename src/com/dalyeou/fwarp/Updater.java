@@ -21,7 +21,7 @@ public class Updater {
         oldVersion = plugin.getDescription().getVersion();
 
         try {
-            connection = (HttpURLConnection) new URL("https://raw.githubusercontent.com/ShayBox/DropChest/master/src/main/resources/plugin.yml").openConnection();
+            connection = (HttpURLConnection) new URL("https://raw.githubusercontent.com/DalYeoU/FWarp/master/version.txt?token=ASTS25FJZB7XS5AEXBERRALACM6AG").openConnection();
             connection.connect();
             newVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
             System.out.println(newVersion);
