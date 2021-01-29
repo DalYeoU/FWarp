@@ -9,3 +9,5 @@ commands:
     description: Create, Delete warp. And Show Warp List.
   Scroll:
     description: Item.
+  Goto:
+    description: Goto.

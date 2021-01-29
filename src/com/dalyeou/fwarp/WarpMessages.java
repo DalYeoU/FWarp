@@ -29,9 +29,9 @@ public class WarpMessages {
 		}
 		if(type == "emptyWarp") {
 			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Wait! We need to write down the name of the warp!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Wait a minute! We need to write Warp's name!");
 			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "잠시만요! 워프이름을 설정해주셔야 해요!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "잠시만요! 워프이름을 적어주셔야 해요!");
 			}
 		}
 		
@@ -125,7 +125,7 @@ public class WarpMessages {
 				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "짜잔! 제가 " + ChatColor.GREEN + name + ChatColor.DARK_GREEN + " 워프로 이동하는 스크롤을 만들었어요!");
 			}
 		}
-
+		
 	}
 	
 }

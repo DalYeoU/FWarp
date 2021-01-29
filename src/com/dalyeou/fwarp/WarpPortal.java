@@ -147,7 +147,7 @@ public class WarpPortal implements Listener {
 							return;
 
 						} else {
-							player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+							player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1f);
 							WarpMessages.outMessage(player, null, "noLink");
 							return;
 
@@ -161,7 +161,7 @@ public class WarpPortal implements Listener {
 		}
 	}
 
-	public void moveToWarp(Player player, String Name) {
+	public static void moveToWarp(Player player, String Name) {
 		World world = FWarpMain.warpWorld.get(Name);
 		Double x = FWarpMain.warpX.get(Name);
 		Double y = FWarpMain.warpY.get(Name);

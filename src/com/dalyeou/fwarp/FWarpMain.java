@@ -36,23 +36,16 @@ public class FWarpMain extends JavaPlugin {
 	 */
 	
 	
+	@SuppressWarnings("unused")
 	private void checkUpdate() {
 		   final Updater updater = new Updater(this);
 		}
 
 	public void onEnable() {
-		
-		
-		
-
-			   //Check For Updates
-			      checkUpdate();
-
-		
-		
-		
 
 		// 커맨드 관련 로드
+		getCommand("Goto").setExecutor( new WarpCommand());
+		
 		getCommand("portal").setExecutor( new WarpCommand());
 		getCommand("portal").setTabCompleter( new WarpCommand());
 
@@ -69,6 +62,7 @@ public class FWarpMain extends JavaPlugin {
 		new ConfigHolder(this);
 		putWARPData();
 		getLanguage();
+		checkUpdate();
 
 		Bukkit.getConsoleSender().sendMessage(WarpPrefix + ChatColor.GREEN + "Plug-in activation");
 
