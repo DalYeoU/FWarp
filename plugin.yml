@@ -3,11 +3,33 @@ main: com.dalyeou.fwarp.FWarpMain
 version: 1.0
 
 commands:
-  portal:
+  Portal:
     description: Create, Delete portal.
-  warp:
-    description: Create, Delete warp. And Show Warp List.
+  Warp:
+    description: Reload, Create, Delete warp. And Show Warp List.
   Scroll:
-    description: Item.
+    description: Make warp portal scroll.
   Goto:
-    description: Goto.
+    description: direct movement to the warp.
+  SetPer:
+    description: You can grant permissions to other users..
+  Language:
+    description: Set plugin's Language.
+    
+permissions:
+  warp.portal:
+    default: op
+  warp.portal.use:
+    default: true
+  warp.warp:
+    default: op
+  warp.scroll:
+    default: op
+  warp.scroll.use:
+    default: true
+  warp.goto:
+    default: op
+  warp.give:
+    default: op
+  warp.Language:
+    default: op

@@ -29,18 +29,10 @@ public class WarpPortal implements Listener {
 
 	public static Plugin plugin = FWarpMain.getPlugin(FWarpMain.class);
 	public static int remove = 0;
+	public static boolean master = false;
 
 	static ArmorStand holograms;
 
-	
-
-//	@EventHandler
-//	public void onJoin(PlayerJoinEvent event) {
-//		Player player = event.getPlayer();
-//	}
-
-	
-	
 	public static void createPortal(Player player, String text, String warpName) {
 		ItemStack item = new ItemStack(Material.JACK_O_LANTERN);
 
@@ -69,7 +61,25 @@ public class WarpPortal implements Listener {
 	@EventHandler
 	public void removePortal(EntityDamageByEntityEvent event) {
 		Player player = (Player) event.getDamager();
+		if(event.getEntity().getType() == EntityType.ARMOR_STAND && player.getItemInHand().getType() == Material.FLINT_AND_STEEL) {
+			if(master == true) {
+				event.setCancelled(true);
+				ArmorStand a = (ArmorStand) event.getEntity();
+				UUID hologramUUID = a.getUniqueId();
+				a.remove();
 
+				player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.4f, 3f);
+
+				FWarpMain.portalNames.put(hologramUUID, null);
+				Configs.PORTAL.getConfig().set("Portal." + hologramUUID , null);
+				Configs.PORTAL.getConfig().set("Portal." + hologramUUID + ".Name", null);
+				Configs.PORTAL.getConfig().set("Portal." + hologramUUID + ".Loc ", null);
+				Configs.PORTAL.saveConfig();
+				
+				master = false;
+				WarpMessages.outMessage(player, null, "problemPortal");
+			}
+		}
 		if(event.getEntity().getType() == EntityType.ARMOR_STAND && player.getItemInHand().getType() == Material.BOOK_AND_QUILL) {
 			if(remove == 1) {
 				event.setCancelled(true);
@@ -98,6 +108,8 @@ public class WarpPortal implements Listener {
 
 				}
 			}
+		} else {
+			return;
 		}
 	}
 
@@ -123,36 +135,49 @@ public class WarpPortal implements Listener {
 			for(Entity nearby : player.getNearbyEntities(0.175,0,0.175)) {
 				if(nearby instanceof Entity) {
 
-					
+
 					if(nearby.getType() == EntityType.ARMOR_STAND && nearby.getCustomName() != null) {
-						UUID hologramUUID = nearby.getUniqueId();
-						String HologramName = FWarpMain.portalNames.get(hologramUUID);
-						String PortalName = nearby.getName();
-						PortalName = PortalName.replaceFirst("§6", "");
-						
-						if(FWarpMain.warpWorld.get(PortalName) != null) {
+						if(player.hasPermission(new WarpPermission().PortalUse) == true) {
 
-							playSound(player);
-							moveToWarp(player, PortalName);
-							playSound(player);
-							WarpMessages.outMessage(player, PortalName, "moveWarp");
-							return;
+							UUID hologramUUID = nearby.getUniqueId();
+							String HologramName = FWarpMain.portalNames.get(hologramUUID);
+							String PortalName = nearby.getName();
+							PortalName = PortalName.replaceFirst("§6", "");
+							if(FWarpMain.portalNames.get(hologramUUID) != null) {
+								if(FWarpMain.warpWorld.get(PortalName) != null) {
 
-						} else if(FWarpMain.warpWorld.get(HologramName) != null) {
+									playSound(player);
+									moveToWarp(player, PortalName);
+									playSound(player);
+									WarpMessages.outMessage(player, PortalName, "moveWarp");
+									return;
 
-							playSound(player);
-							moveToWarp(player, HologramName);
-							playSound(player);
-							WarpMessages.outMessage(player, HologramName, "moveWarp");
-							return;
+								} else if(FWarpMain.warpWorld.get(HologramName) != null) {
 
-						} else {
+									playSound(player);
+									moveToWarp(player, HologramName);
+									playSound(player);
+									WarpMessages.outMessage(player, HologramName, "moveWarp");
+									return;
+
+								} else {
+									player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1f);
+									WarpMessages.outMessage(player, null, "noLink");
+									return;
+
+								}
+							} else {
+								player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_THUNDER, 0.5f, 1f);
+								WarpMessages.outMessage(player, null, "fakePortal");
+								return;
+
+							}
+						} else if(player.hasPermission(new WarpPermission().PortalUse) == false) {
 							player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1f);
-							WarpMessages.outMessage(player, null, "noLink");
+							WarpMessages.noPermission(player);
 							return;
 
 						}
-
 					}
 				}
 			}

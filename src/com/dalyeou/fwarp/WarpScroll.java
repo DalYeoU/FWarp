@@ -37,8 +37,8 @@ public class WarpScroll implements Listener {
 		lore.add(ChatColor.GOLD + warpName);
 		for(int i = 0; i < loreList.size(); i++) {
 			lore.add(ChatColor.translateAlternateColorCodes('&',loreList.get(i)));
-		}
 
+		}
 		meta.setLore(lore);
 		meta.addEnchant(Enchantment.LURE, 1, true);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -50,19 +50,22 @@ public class WarpScroll implements Listener {
 	}
 
 	public static boolean isCustomItem(ItemStack item) { 		// 스크롤인지 확인
-		if(item.hasItemMeta()){
-			if((item.getItemMeta().hasDisplayName()) || item.getItemMeta().hasLore()){
-				if(item.getItemMeta().getLore().contains(ChatColor.GRAY + "Scroll")) {
-					return true;
-				}else{
+		if(item.hasItemMeta()){//1
+			if(item.getType() == Material.PAPER) {
+				if((item.getItemMeta().hasDisplayName()) && item.getItemMeta().hasLore() && item.getEnchantments() != null) {
+					if(item.getItemMeta().getLore().contains(ChatColor.GRAY + "Scroll")) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
 					return false;
 				}
 			}else{
 				return false;
 			}
-		}else{
-			return false;
-		}
+		}//1
+		return false;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -73,14 +76,30 @@ public class WarpScroll implements Listener {
 		Block block = event.getClickedBlock();
 
 		if(action.equals(Action.LEFT_CLICK_BLOCK)) {
-			if(isCustomItem(player.getItemInHand()) == true) {
-				Location blockLocation1 = block.getLocation();
+			if(isCustomItem(player.getItemInHand()) == true ) {
 				String wName = player.getItemInHand().getItemMeta().getLore().get(1);
-				event.setCancelled(true);
-				scrollPortalParticle(player, wName, blockLocation1.subtract(-0.5, -1, -0.5));
-				createScrollPortal(player, wName, blockLocation1);
-				player.getItemInHand().setAmount(player.getItemInHand().getAmount()-1);
-				return;
+				String PortalName = wName.replaceFirst("§6", "");
+
+				if(player.hasPermission(new WarpPermission().ScrollUse) == true) {
+					if(FWarpMain.Lists.contains(PortalName)) {
+						Location blockLocation1 = block.getLocation();
+						event.setCancelled(true);
+						scrollPortalParticle(player, wName, blockLocation1.subtract(-0.5, -1, -0.5));
+						createScrollPortal(player, wName, blockLocation1);
+						player.getItemInHand().setAmount(player.getItemInHand().getAmount()-1);
+						return;
+					} else {
+						player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+						WarpMessages.outMessage(player, wName, "noLink");
+
+					}
+				} else if(player.hasPermission(new WarpPermission().ScrollUse) == false) {
+					event.setCancelled(true);
+					player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1f);
+					WarpMessages.noPermission(player);
+					return;
+
+				}
 			} else {
 				return;
 			}
@@ -112,6 +131,8 @@ public class WarpScroll implements Listener {
 		holograms.setAI(false);
 		holograms.setRemoveWhenFarAway(false);
 		player.getWorld().playSound(location, Sound.ENTITY_CHICKEN_EGG, 0.5f, 1f);
+		String PortalName = name.replaceFirst("§6", "");
+		FWarpMain.portalNames.put(holograms.getUniqueId(), PortalName);
 		WarpMessages.outMessage(player, null, "createScrollPortal");
 
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
@@ -127,6 +148,7 @@ public class WarpScroll implements Listener {
 			public void run() {
 				holograms.remove();
 				player.getWorld().playSound(location, Sound.ENTITY_ITEM_BREAK, 0.5f, 1f);
+				FWarpMain.portalNames.remove(holograms.getUniqueId());
 				WarpMessages.outMessage(player, null, "deadScrollPortal");
 			}
 		}, 200);

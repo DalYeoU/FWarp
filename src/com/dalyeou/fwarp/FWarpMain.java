@@ -44,27 +44,39 @@ public class FWarpMain extends JavaPlugin {
 	public void onEnable() {
 
 		// 커맨드 관련 로드
+		getCommand("SetPer").setExecutor( new WarpCommand());
+		getCommand("SetPer").setTabCompleter( new WarpCommand());
+		
 		getCommand("Goto").setExecutor( new WarpCommand());
 		
-		getCommand("portal").setExecutor( new WarpCommand());
-		getCommand("portal").setTabCompleter( new WarpCommand());
+		getCommand("Portal").setExecutor( new WarpCommand());
+		getCommand("Portal").setTabCompleter( new WarpCommand());
 
-		getCommand("warp").setExecutor( new WarpCommand());
-		getCommand("warp").setTabCompleter( new WarpCommand());
+		getCommand("Warp").setExecutor( new WarpCommand());
+		getCommand("Warp").setTabCompleter( new WarpCommand());
 		
 		getCommand("Scroll").setExecutor( new WarpCommand());
+
+		getCommand("Language").setExecutor( new WarpCommand());
 
 		// 클래스 로드
 		Bukkit.getPluginManager().registerEvents(new WarpPortal(), this);
 		Bukkit.getPluginManager().registerEvents(new WarpCommand(), this);
 		Bukkit.getPluginManager().registerEvents(new WarpScroll(), this);
+		Bukkit.getPluginManager().registerEvents(new WarpGivePer(), this);
 
 		new ConfigHolder(this);
+		
 		putWARPData();
 		getLanguage();
+		
+		if(Configs.CONFIG.getConfig().getBoolean("checkUpdates") == true) {
 		checkUpdate();
+		} else {
+		}
+		WarpGivePer.loadPermissions();
 
-		Bukkit.getConsoleSender().sendMessage(WarpPrefix + ChatColor.GREEN + "Plug-in activation");
+		//Bukkit.getConsoleSender().sendMessage(WarpPrefix + ChatColor.GREEN + "Plug-in activation");
 
 	}
 
@@ -101,7 +113,7 @@ public class FWarpMain extends JavaPlugin {
 
 	public void onDisable() {
 
-		Bukkit.getConsoleSender().sendMessage(WarpPrefix + ChatColor.GREEN + "워프 플러그인 비활성화");
+		Bukkit.getConsoleSender().sendMessage(WarpPrefix + ChatColor.GREEN + "Good Bye!");
 
 	}
 }

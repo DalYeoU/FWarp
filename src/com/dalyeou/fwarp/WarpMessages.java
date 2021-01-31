@@ -1,6 +1,7 @@
 package com.dalyeou.fwarp;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class WarpMessages {
@@ -52,10 +53,10 @@ public class WarpMessages {
 		if(type == "delPortal") {
 			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
 				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "Oh, did you create the wrong portal? It's okay! We can make it again!");
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "Hit the portal you want to delete!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "Attack the portal you want to erase with a book and quill!");
 			} else {
 				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "혹시 포탈을 잘못 만드셧나요? 괜찮아요! 다시 만들면 되니까요!");
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "지우려는 포탈을 공격해주세요!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "지우려는 포탈을 책과 깃펜으로 공격해주세요!");
 			}
 		}
 		if(type == "canDelPortal") {
@@ -71,6 +72,27 @@ public class WarpMessages {
 				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "I just deleted a portal that connects to a warp called " + ChatColor.GREEN + name + "!" + ChatColor.DARK_GREEN +" It doesn't exist anymore!");
 			} else {
 				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "제가 " + ChatColor.GREEN + name + " " + ChatColor.DARK_GREEN +"라는 워프에 연결된 포탈을 삭제했어요! 이제 더이상 그 포탈은 없어요!");
+			}
+		}
+		if(type == "problemerase") {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "Do you have a problem? Don't worry! I'll erase it at once! Please use flint and steel!");
+			} else {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "혹시 문제가 생기셧나요? 걱정하지 마세요! 제가 한방에 지워드릴게요! 라이터를 사용해주세요!");
+			}
+		}
+		if(type == "problemcancle") {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "You seem to have solved the problem! That's a relief!");
+			} else {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "문제를 해결하셧나 보군요! 다행이네요!");
+			}
+		}
+		if(type == "problemPortal") {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "I erased the problem!");
+			} else {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "제가 골칫덩어리를 지워버렸어요!");
 			}
 		}
 		if(type == "donBreak") {
@@ -96,6 +118,14 @@ public class WarpMessages {
 				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "이 포탈을 삭제하거나 이 포탈에 연결된 이름과 동일한 이름의 워프를 만들어 주세요!");
 			}
 		}
+		if(type == "fakePortal") {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Hey! Stop it! Isn't the name tag a waste?");
+
+			} else {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "이봐요! 그만해요! 이름표가 아깝지 않나요?");
+			}
+		}
 		
 		if(type == "createScrollPortal") {
 			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
@@ -106,9 +136,9 @@ public class WarpMessages {
 		}
 		if(type == "deadScrollPortal") {
 			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "The portal I made with scroll was erased due to the time limit!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "The scroll portal was erased because of the time limit!");
 			} else {
-				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "스크롤로 만든 포털이 시간 제한 때문에 지워졌어요!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "스크롤로 만든 포탈이 시간 제한 때문에 지워졌어요!");
 			}
 		}
 		if(type == "wrongScroll") {
@@ -125,7 +155,45 @@ public class WarpMessages {
 				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "짜잔! 제가 " + ChatColor.GREEN + name + ChatColor.DARK_GREEN + " 워프로 이동하는 스크롤을 만들었어요!");
 			}
 		}
+		if(type == "noPlayer") {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Sorry, there is no player named " + ChatColor.DARK_GREEN + name + ChatColor.RED + "!");
+			} else {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "죄송해요, " + ChatColor.DARK_GREEN + name + ChatColor.RED + "라는 플레이어가 없어요!");
+			}
+		}
+		if(type == "Language") {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "Now plugin's Language is " + ChatColor.GREEN + "ENGLISH!");
+			} else {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "이제 플러그인의 언어는 " + ChatColor.GREEN + "한국어에요!!");
+			}
+		}
 		
+	}
+	
+	public static void givePermission(Player player, Player target, String permission, String perType) {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+//				KAI modified your warp.goto node to true!
+//				I modified dkrwm's warp.gotto node to true!
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.DARK_GREEN + "I modified " + ChatColor.GREEN + target.getName() + ChatColor.DARK_GREEN + " 's " + ChatColor.GREEN + permission + ChatColor.DARK_GREEN + " node to " + ChatColor.GREEN + perType + ChatColor.DARK_GREEN + "!");
+				target.sendMessage(FWarpMain.WarpPrefix + ChatColor.GREEN + player.getName() + ChatColor.DARK_GREEN + "modified your " + ChatColor.GREEN + permission + ChatColor.DARK_GREEN + " node to " + ChatColor.GREEN + perType + ChatColor.DARK_GREEN + "!");
+			} else {
+//				KAI님이 당신의 warp.goto 노드를 true로 수정했어요!
+//				dkrwm님의 warp.goto노드를 true로 수정했어요!
+				target.sendMessage(FWarpMain.WarpPrefix + ChatColor.GREEN + player.getName() + ChatColor.DARK_GREEN + "님이 당신의 " + ChatColor.GREEN + permission + ChatColor.DARK_GREEN + " 노드를 " + ChatColor.GREEN + perType + ChatColor.DARK_GREEN + "로 수정했어요!");
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.GREEN + target.getName() + ChatColor.DARK_GREEN + "님의 " + ChatColor.GREEN + permission + ChatColor.DARK_GREEN + "노드를 " + ChatColor.GREEN + perType + ChatColor.DARK_GREEN + "로 수정했어요!");
+			}
+	}
+	
+	public static void noPermission(Player player) {
+			if(FWarpMain.pluginLanguage.equalsIgnoreCase(FWarpMain.baseLanguage)) {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "Sorry, You don't have permission!");
+				player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1f);
+			} else {
+				player.sendMessage(FWarpMain.WarpPrefix + ChatColor.RED + "죄송해요, 당신은 이 명령어를 사용할 권한이 없어요!");
+				player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1f);
+			}
 	}
 	
 }

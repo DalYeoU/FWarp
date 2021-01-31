@@ -69,7 +69,8 @@ public class ConfigHolder {
 	public enum Configs {
 		CONFIG("config.yml"),
 		PORTAL("portal.yml"),
-		WARP("warp.yml");
+		WARP("warp.yml"),
+		PER("permission.yml");
 
 		private String name;
 		private FileConfiguration config;
